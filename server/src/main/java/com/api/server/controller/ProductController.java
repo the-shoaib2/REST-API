@@ -1,62 +1,100 @@
 package com.api.server.controller;
 
 import com.api.server.model.Product;
-import com.api.server.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.api.server.service.InventoryService;
+import com.api.server.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
-public class ProductController {
+public class ProductController extends AbstractBaseController<Product> {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductService productService;
+    private final InventoryService inventoryService;
+
+    public ProductController(ProductService productService, InventoryService inventoryService) {
+        super(productService);
+        this.productService = productService;
+        this.inventoryService = inventoryService;
+    }
 
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    @Override
+    public List<Product> getAll() {
+        return super.getAll();
     }
 
     @PostMapping
-    public Product createProduct(@Valid @RequestBody Product product) {
-        return productRepository.save(product);
+    @Override
+    public ResponseEntity<Product> create(@Valid @RequestBody Product product) {
+        return super.create(product);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable String id) {
-        return productRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @Override
+    public ResponseEntity<Product> getById(@PathVariable String id) {
+        return super.getById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable String id, @Valid @RequestBody Product product) {
-        return productRepository.findById(id)
-                .map(existingProduct -> {
-                    product.setId(id);
-                    return ResponseEntity.ok(productRepository.save(product));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    @Override
+    public ResponseEntity<Product> update(@PathVariable String id, @RequestBody Product product) {
+        return super.update(id, product);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable String id) {
+    @Override
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        return super.delete(id);
+    }
+
+    @PostMapping("/{id}/stock/checkin")
+    public ResponseEntity<Product> checkInStock(
+            @PathVariable String id,
+            @RequestParam @Positive(message = "Quantity must be positive") int quantity) {
         try {
-            if (!productRepository.existsById(id)) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found with id: " + id);
-            }
-            productRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } catch (ResponseStatusException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error deleting product", e);
+            return ResponseEntity.ok(inventoryService.addStock(id, quantity));
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/stock/checkout")
+    public ResponseEntity<Product> checkOutStock(
+            @PathVariable String id,
+            @RequestParam @Positive(message = "Quantity must be positive") int quantity) {
+        try {
+            return ResponseEntity.ok(inventoryService.removeStock(id, quantity));
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/sell")
+    public ResponseEntity<Product> sellProduct(
+            @PathVariable String id,
+            @RequestParam @Positive(message = "Quantity must be positive") int quantity) {
+        try {
+            return ResponseEntity.ok(inventoryService.processStockSale(id, quantity));
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/stock")
+    public ResponseEntity<Integer> getStockQuantity(@PathVariable String id) {
+        try {
+            return ResponseEntity.ok(inventoryService.getCurrentStock(id));
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 }
