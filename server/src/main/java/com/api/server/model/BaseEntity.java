@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import java.time.LocalDateTime;
 
+
+// Base class for all entities in the application abstracting the common fields
 @Document
 public abstract class BaseEntity {
     @Id

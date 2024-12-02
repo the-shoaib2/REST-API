@@ -14,7 +14,7 @@ import jakarta.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/products")  // Define the base URL
 public class ProductController extends AbstractBaseController<Product> {
 
     private final ProductService productService;

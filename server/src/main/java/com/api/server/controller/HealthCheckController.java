@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class HealthCheckController {
-    @GetMapping("/health")
+    @GetMapping("/health")   //Get Method
     public ResponseEntity<String> healthCheck() {
         String responseContent = "<!DOCTYPE html>" +
                 "<html>" +
@@ -25,7 +25,7 @@ public class HealthCheckController {
         return ResponseEntity.ok(responseContent);
     }
 
-    @GetMapping("/error")
+    @GetMapping("/error")  //Get Method
     public ResponseEntity<String> handleError() {
         String errorPage = "<!DOCTYPE html>" +
                 "<html>" +

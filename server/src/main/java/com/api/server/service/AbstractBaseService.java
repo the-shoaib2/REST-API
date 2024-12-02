@@ -5,10 +5,13 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 import java.util.Optional;
 
+// Abstract class for all services in the application(Abstraction) 
+
 public abstract class AbstractBaseService<T extends BaseEntity> implements BaseService<T> {
-    
+
     protected final MongoRepository<T, String> repository;
 
+    // Methods Overriding (Polymorphism)
     protected AbstractBaseService(MongoRepository<T, String> repository) {
         this.repository = repository;
     }

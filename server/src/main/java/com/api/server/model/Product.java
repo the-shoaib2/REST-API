@@ -1,6 +1,5 @@
 package com.api.server.model;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -11,6 +10,8 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
+
+// Product entity Inharits from BaseEntity (Inharitance)
 @Document(collection = "products")
 public class Product extends BaseEntity {
     
