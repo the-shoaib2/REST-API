@@ -1,6 +1,6 @@
-package com.shopping.repository;
+package com.api.server.repository;
 
-import com.shopping.model.Product;
+import com.api.server.model.Product;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

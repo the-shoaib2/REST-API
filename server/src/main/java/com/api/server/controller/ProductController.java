@@ -1,7 +1,7 @@
-package com.shopping.controller;
+package com.api.server.controller;
 
-import com.shopping.model.Product;
-import com.shopping.repository.ProductRepository;
+import com.api.server.model.Product;
+import com.api.server.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.shopping.controller;
+package com.api.server.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

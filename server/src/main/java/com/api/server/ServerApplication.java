@@ -7,9 +7,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.api.server", "com.shopping"})
-@EnableMongoRepositories(basePackages = "com.shopping.repository")
-@EntityScan(basePackages = "com.shopping.model")
+@ComponentScan(basePackages = "com.api.server")
+@EnableMongoRepositories(basePackages = "com.api.server.repository")
+@EntityScan(basePackages = "com.api.server.model")
 public class ServerApplication {
 
     public static void main(String[] args) {
